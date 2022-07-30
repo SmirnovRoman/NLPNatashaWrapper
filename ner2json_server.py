@@ -42,9 +42,6 @@ class HttpGetHandler(BaseHTTPRequestHandler):
         self.end_headers()
         text = str(urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get('text',None))
         print(text)
-#	text_file = open(sys.argv[1], "r")
-#	text = text_file.read()
-#	text_file.close()
         doc = Doc(text)
         doc.segment(segmenter)
         doc.tag_morph(morph_tagger)
@@ -58,8 +55,7 @@ class HttpGetHandler(BaseHTTPRequestHandler):
                 if span.type == PER:
                     span.extract_fact(names_extractor)
         outstr="{\"items\":["
-        for x in doc.spans:
-	#	print(x)
+        for x in doc.spans:	
         	if x.type=='PER':
         	    outstr+="{"
         	    outstr+="\"normal\":"+json.dumps(x.normal)+","
@@ -70,10 +66,6 @@ class HttpGetHandler(BaseHTTPRequestHandler):
         	    outstr+="},"
         outstr=outstr.rstrip(",")
         outstr+="]}"
-#        <html><head><meta charset="utf-8">'.encode())
-#        self.wfile.write('<title>Простой HTTP-сервер.</title></head>'.encode())
-#        self.wfile.write('<body>Был получен GET-запрос.</body></html>'.encode())
-#	print(outstr)
         self.wfile.write(outstr.encode())
 
 run(handler_class=HttpGetHandler)
